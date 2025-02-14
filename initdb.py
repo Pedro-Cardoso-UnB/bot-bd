@@ -1,27 +1,12 @@
-# all the imports
 import sqlite3
-from flask import Flask
-from contextlib import closing
 
-# configuration
-DATABASE = './bot.db'
-DEBUG = True
-
-
-# create our little application :)
-app = Flask(__name__)
-app.config.from_object(__name__)
-
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('discord-bot.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
-
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
-
-if __name__ == '__main__':
-    init_db()
-    #app.run()
+def initialize_database():
+    conn = sqlite3.connect('bot.db')
+    cursor = conn.cursor()
+    with open('discord-bot.sql', 'r') as sql_file:
+        sql_script = sql_file.read()
+    cursor.executescript(sql_script)
+    print("Database initialized successfully.")
+    conn.close()
+    
+initialize_database()
